@@ -31,9 +31,9 @@ router.get('/:userId', async (req, res, next) => {
 
 // Update a user's available funds after a transaction is made
 router.put('/:userId', async (req, res, next) => {
+  const userId = req.params.userId
+  const transactionPrice = req.body.transactionPrice
   try {
-    const userId = req.params.userId
-    const transactionPrice = req.body.transactionPrice
     const currentUser = await User.findByPk(userId)
     const newFunds = currentUser.funds + transactionPrice
     if (newFunds >= 0) {
