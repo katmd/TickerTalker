@@ -15,3 +15,36 @@ router.get('/', async (req, res, next) => {
     next(err)
   }
 })
+
+// Grab a user's current available funds
+router.get('/:userId', async (req, res, next) => {
+  const userId = req.params.userId
+  try {
+    const userFunds = await User.findByPk(userId, {
+      attributes: ['funds']
+    })
+    res.json(userFunds)
+  } catch (error) {
+    next(error)
+  }
+})
+
+// Update a user's available funds after a transaction is made
+router.put('/:userId', async (req, res, next) => {
+  try {
+    const userId = req.params.userId
+    const transactionPrice = req.body.transactionPrice
+    const currentUser = await User.findByPk(userId)
+    const newFunds = currentUser.funds + transactionPrice
+    if (newFunds >= 0) {
+      await currentUser.update({
+        funds: newFunds
+      })
+    } else {
+      throw new Error('Insufficient funds for transaction')
+    }
+    res.sendStatus(200)
+  } catch (error) {
+    next(error)
+  }
+})
