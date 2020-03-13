@@ -1,7 +1,7 @@
 {
-  "name": "boilermaker",
+  "name": "ticker-talker",
   "version": "2.0.0",
-  "description": "Some boilerplate code to get you started - get shakin'!",
+  "description": "Visualize and track real-time stock choices in a safe, testing environment!",
   "engines": {
     "node": ">= 7.0.0"
   },
