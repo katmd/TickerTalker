@@ -16,19 +16,6 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-// Grab a user's current available funds
-router.get('/:userId', async (req, res, next) => {
-  const userId = req.params.userId
-  try {
-    const userFunds = await User.findByPk(userId, {
-      attributes: ['funds']
-    })
-    res.json(userFunds)
-  } catch (error) {
-    next(error)
-  }
-})
-
 // Update a user's available funds after a transaction is made
 router.put('/:userId', async (req, res, next) => {
   const userId = req.params.userId
