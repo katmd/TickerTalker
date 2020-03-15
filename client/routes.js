@@ -4,6 +4,7 @@ import {withRouter, Route, Switch} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import {Login, Signup, Portfolio, TransactionHistory} from './components'
 import {me} from './store'
+import {bindActionCreators} from 'redux'
 
 /**
  * COMPONENT
@@ -14,7 +15,7 @@ class Routes extends Component {
   }
 
   render() {
-    const {isLoggedIn} = this.props
+    let {actions, isLoggedIn} = this.props
 
     return (
       <Switch>
@@ -23,8 +24,12 @@ class Routes extends Component {
         <Route path="/signup" component={Signup} />
         {isLoggedIn && (
           <Switch>
+            s
             {/* Routes placed here are only available after logging in */}
-            <Route path="/portfolio" component={Portfolio} />
+            <Route
+              path="/portfolio"
+              render={() => <Portfolio actions={actions} />}
+            />
             <Route path="/transaction-history" component={TransactionHistory} />
           </Switch>
         )}
