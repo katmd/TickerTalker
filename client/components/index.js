@@ -5,4 +5,6 @@
  */
 export {default as Navbar} from './navbar'
 export {default as Portfolio} from './portfolio'
+export {default as TransactionHistory} from './transaction-history'
+export {default as Table} from './table'
 export {Login, Signup} from './auth-form'
