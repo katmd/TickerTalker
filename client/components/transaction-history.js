@@ -23,7 +23,7 @@ class TransactionHistory extends React.Component {
         style: 'currency',
         currency: 'USD',
         minimumFractionDigits: 2
-      }).format(transaction.price)}`
+      }).format(transaction.price / 100)}`
       let transactionDate = transaction.createdAt.slice(0, 10)
       return [
         transactionDate,
