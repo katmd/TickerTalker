@@ -1,14 +1,20 @@
 import axios from 'axios'
+import {condensePortfolio, valueTickers} from '../utils/portfolio'
 
 /**
  * ACTION TYPES
  */
 const GET_TRANSACTIONS = 'GET_TRANSACTIONS'
+const START_PORTFOLIO = 'START_PORTFOLIO'
+const VALUE_PORTFOLIO = 'VALUE_PORTFOLIO'
 
 /**
  * INITIAL STATE
  */
-const defaultTransactions = []
+const defaultTransactions = {
+  history: [],
+  portfolio: {}
+}
 
 /**
  * ACTION CREATORS
@@ -18,13 +24,52 @@ const getTransactions = transactions => ({
   transactions
 })
 
+const startPortfolio = portfolio => ({
+  type: START_PORTFOLIO,
+  portfolio
+})
+
+const valuePortfolio = tickerValues => ({
+  type: VALUE_PORTFOLIO,
+  tickerValues
+})
+
 /**
  * THUNK CREATORS
  */
 export const getTransactionsThunk = userId => async dispatch => {
   try {
-    let userTransactions = await axios.get(`/api/transactions/${userId}`)
-    dispatch(getTransactions(userTransactions.data))
+    // to populate the user's portfolio, must first grab the user's transactions before calls may be made to the IEX API with a series of Promises to ensure the requests are fulfilled in order.
+    await axios
+      .get(`/api/transactions/${userId}`)
+      .then(userTransactionsResponse => {
+        let userTransactions = userTransactionsResponse.data
+        // user transactions have been received, dispatch to reducer
+        dispatch(getTransactions(userTransactions))
+        return userTransactionsResponse
+      })
+      .then(userTransactionsResponse => {
+        let condensedPortfolio = condensePortfolio(
+          userTransactionsResponse.data
+        )
+        // initial portfolio without valued stocks has been received, dispatch to reducer
+        dispatch(startPortfolio(condensedPortfolio))
+        // symbols must be encoded if they contain reserved characters
+        let encodedSymbols = encodeURIComponent(
+          Object.keys(condensedPortfolio).toString()
+        )
+        // separate axios request made to IEX API based on the user's transactions
+        axios
+          .get(
+            `https://api.iextrading.com/1.0/tops/last?symbols=${encodedSymbols}`
+          )
+          .then(tickerDetailsResponse => {
+            let tickerDetails = tickerDetailsResponse.data
+            let valuedTickers = valueTickers(tickerDetails)
+            // current values of ticker symbols have been received, dispatch to reducer
+            dispatch(valuePortfolio(valuedTickers))
+          })
+      })
   } catch (err) {
     console.error(err)
   }
@@ -36,7 +81,17 @@ export const getTransactionsThunk = userId => async dispatch => {
 export default function(state = defaultTransactions, action) {
   switch (action.type) {
     case GET_TRANSACTIONS:
-      return action.transactions
+      return Object.assign({}, state, {history: action.transactions})
+    case START_PORTFOLIO:
+      return Object.assign({}, state, {portfolio: action.portfolio})
+    case VALUE_PORTFOLIO: {
+      let portfolioCopy = {...state.portfolio}
+      let tickerValues = action.tickerValues
+      for (let key of Object.keys(portfolioCopy)) {
+        portfolioCopy[key].value = tickerValues[key]
+      }
+      return Object.assign({}, state, {portfolio: portfolioCopy})
+    }
     default:
       return state
   }

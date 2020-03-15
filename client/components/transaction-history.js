@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {getTransactionsThunk} from '../store/transactions'
+import {convertCentsToUSD} from '../utils/portfolio'
 import {Table} from './index'
 
 /**
@@ -9,41 +10,40 @@ import {Table} from './index'
  */
 class TransactionHistory extends React.Component {
   componentDidMount() {
-    const {userId, fetchTransactions} = this.props
-    fetchTransactions(userId)
+    const {userId, getTransactions} = this.props
+    getTransactions(userId)
   }
 
   formatTableDetails() {
     const {userTransactions} = this.props
-    let transactionsTableHeader = ['Date', 'Order', 'Symbol', 'Details']
-    let transactionsTableData = userTransactions.map(transaction => {
-      let sharePriceInfo = `${
-        transaction.shareCount
-      } shares @ ${Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2
-      }).format(transaction.price / 100)}`
-      let transactionDate = transaction.createdAt.slice(0, 10)
-      return [
-        transactionDate,
-        transaction.orderType,
-        transaction.symbol,
-        sharePriceInfo
-      ]
-    })
-    return {header: transactionsTableHeader, data: transactionsTableData}
+    if (userTransactions.length > 0) {
+      let transactionsTableData = userTransactions.map(transaction => {
+        let sharePriceInfo = `${
+          transaction.shareCount
+        } shares @ ${convertCentsToUSD(transaction.price)}`
+        let transactionDate = transaction.createdAt.slice(0, 10)
+        return [
+          transactionDate,
+          transaction.orderType,
+          transaction.symbol,
+          sharePriceInfo
+        ]
+      })
+      return transactionsTableData
+    } else {
+      return []
+    }
   }
 
   render() {
-    let transactionsTableDetails = this.formatTableDetails()
-
+    let transactionsTableHeader = ['Date', 'Order', 'Symbol', 'Details']
+    let transactionsTableData = this.formatTableDetails()
     return (
       <div>
         <h1 className="page-header">Transaction History</h1>
         <Table
-          tableHeader={transactionsTableDetails.header}
-          tableData={transactionsTableDetails.data}
+          tableHeader={transactionsTableHeader}
+          tableData={transactionsTableData}
         />
       </div>
     )
@@ -56,13 +56,13 @@ class TransactionHistory extends React.Component {
 const mapState = state => {
   return {
     userId: state.user.id,
-    userTransactions: state.transactions
+    userTransactions: state.transactions.history
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchTransactions: userId => dispatch(getTransactionsThunk(userId))
+    getTransactions: userId => dispatch(getTransactionsThunk(userId))
   }
 }
 
