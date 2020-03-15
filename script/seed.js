@@ -8,7 +8,7 @@ async function seed() {
   console.log('db synced!')
 
   const users = await Promise.all([
-    User.create({email: 'cody@email.com', password: '123', funds: 375000}),
+    User.create({email: 'cody@email.com', password: '123', funds: 369500}),
     User.create({email: 'murphy@email.com', password: '123'})
   ])
 
@@ -17,15 +17,22 @@ async function seed() {
       userId: 1,
       symbol: 'AAPL',
       shareCount: '10',
-      price: 300,
+      price: 30000,
       orderType: 'BUY'
     }),
     Transaction.create({
       userId: 1,
       symbol: 'AAPL',
       shareCount: '5',
-      price: 350,
+      price: 35000,
       orderType: 'SELL'
+    }),
+    Transaction.create({
+      userId: 1,
+      symbol: 'ACEL+',
+      shareCount: '10',
+      price: 550,
+      orderType: 'BUY'
     })
   ])
 
