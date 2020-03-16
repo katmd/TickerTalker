@@ -24,16 +24,16 @@ router.post('/:userId', async (req, res, next) => {
     const currentUser = await User.findByPk(userId)
     const newFunds = currentUser.funds + transactionPrice
     if (newFunds >= 0) {
-      await currentUser.createTransaction({
+      let transaction = await currentUser.createTransaction({
         symbol: req.body.symbol,
         shareCount: req.body.shareCount,
         price: req.body.price,
         orderType: req.body.orderType
       })
+      res.json(transaction)
     } else {
       throw new Error('Insufficient funds for transaction')
     }
-    res.sendStatus(201)
   } catch (error) {
     next(error)
   }

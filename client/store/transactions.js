@@ -5,6 +5,7 @@ import {condensePortfolio, valueTickers} from '../utils/portfolio'
  * ACTION TYPES
  */
 const GET_TRANSACTIONS = 'GET_TRANSACTIONS'
+const ADD_TRANSACTION = 'ADD_TRANSACTION'
 const START_PORTFOLIO = 'START_PORTFOLIO'
 const VALUE_PORTFOLIO = 'VALUE_PORTFOLIO'
 
@@ -22,6 +23,11 @@ const defaultTransactions = {
 const getTransactions = transactions => ({
   type: GET_TRANSACTIONS,
   transactions
+})
+
+const addTransaction = transaction => ({
+  type: ADD_TRANSACTION,
+  transaction
 })
 
 const startPortfolio = portfolio => ({
@@ -75,6 +81,29 @@ export const getTransactionsThunk = userId => async dispatch => {
   }
 }
 
+export const addTransactionThunk = (userId, stockDetails) => async dispatch => {
+  try {
+    const currentUser = await axios.get('/auth/me')
+    let transactionPrice = stockDetails.price
+    let newFunds = currentUser.funds + transactionPrice
+    if (newFunds >= 0) {
+      let symbol = stockDetails.symbol
+      let shareCount = stockDetails.shareCount
+      let orderType = stockDetails.orderType
+      let transaction = await axios.post(
+        `/api/transactions/${userId}`,
+        symbol,
+        shareCount,
+        transactionPrice,
+        orderType
+      )
+      dispatch(addTransaction(transaction))
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 /**
  * REDUCER
  */
@@ -82,6 +111,10 @@ export default function(state = defaultTransactions, action) {
   switch (action.type) {
     case GET_TRANSACTIONS:
       return Object.assign({}, state, {history: action.transactions})
+    case ADD_TRANSACTION:
+      return Object.assign({}, state, {
+        history: [...state.history, action.transaction]
+      })
     case START_PORTFOLIO:
       return Object.assign({}, state, {portfolio: action.portfolio})
     case VALUE_PORTFOLIO: {
