@@ -1,18 +1,68 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import {Table} from './index'
+import {getTransactionsThunk} from '../store/transactions'
+import {convertCentsToUSD} from '../utils/portfolio'
 
 /**
  * COMPONENT
  */
-export const Portfolio = props => {
-  const {email} = props
+class Portfolio extends React.Component {
+  componentDidMount() {
+    let {userId, getTransactions} = this.props
+    getTransactions(userId)
+  }
 
-  return (
-    <div>
-      <h3>Welcome, {email}</h3>
-    </div>
-  )
+  totalPortfolioValue() {
+    const {portfolio} = this.props
+    if (Object.keys(portfolio).length > 0) {
+      let total = 0
+      for (let stock of Object.keys(portfolio)) {
+        total += portfolio[stock].value * portfolio[stock].shareCount
+      }
+      return total
+    } else {
+      return 0
+    }
+  }
+
+  formatTableDetails() {
+    const {portfolio} = this.props
+    if (Object.keys(portfolio).length > 0) {
+      let portfolioTableData = Object.keys(portfolio).map(entry => {
+        let shareCount = portfolio[entry].shareCount
+        let currentValue = convertCentsToUSD(
+          portfolio[entry].value * shareCount
+        )
+        return [entry, shareCount, currentValue]
+      })
+      return portfolioTableData
+    } else {
+      return []
+    }
+  }
+
+  render() {
+    const {funds} = this.props
+    let portfolioTableHeader = ['Symbol', 'Shares', 'Current Value']
+    let portfolioTableData = this.formatTableDetails()
+    return (
+      <div>
+        <h1 className="page-header">Portfolio</h1>
+        <div id="portfolio-metrics">
+          <h2>
+            Current Value - {convertCentsToUSD(this.totalPortfolioValue())}
+          </h2>
+          <h2>Cash Funds - {convertCentsToUSD(funds)}</h2>
+          <Table
+            tableHeader={portfolioTableHeader}
+            tableData={portfolioTableData}
+          />
+        </div>
+      </div>
+    )
+  }
 }
 
 /**
@@ -20,15 +70,25 @@ export const Portfolio = props => {
  */
 const mapState = state => {
   return {
-    email: state.user.email
+    userId: state.user.id,
+    funds: state.user.funds,
+    userTransactions: state.transactions.history,
+    portfolio: state.transactions.portfolio
   }
 }
 
-export default connect(mapState)(Portfolio)
+const mapDispatchToProps = dispatch => {
+  return {
+    getTransactions: userId => dispatch(getTransactionsThunk(userId))
+  }
+}
+
+export default connect(mapState, mapDispatchToProps)(Portfolio)
 
 /**
  * PROP TYPES
  */
 Portfolio.propTypes = {
-  email: PropTypes.string
+  funds: PropTypes.number,
+  portfolio: PropTypes.object
 }
