@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {Table} from './index'
-import {getTransactionsThunk} from '../store/transactions'
+import {getPortfolioThunk} from '../store/transactions'
 import {convertCentsToUSD} from '../utils/portfolio'
 
 /**
@@ -10,8 +10,8 @@ import {convertCentsToUSD} from '../utils/portfolio'
  */
 class Portfolio extends React.Component {
   componentDidMount() {
-    let {userId, getTransactions} = this.props
-    getTransactions(userId)
+    let {userId, getPortfolio} = this.props
+    getPortfolio(userId)
   }
 
   totalPortfolioValue() {
@@ -78,7 +78,7 @@ const mapState = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getTransactions: userId => dispatch(getTransactionsThunk(userId))
+    getPortfolio: userId => dispatch(getPortfolioThunk(userId))
   }
 }
 

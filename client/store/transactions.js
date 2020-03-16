@@ -45,13 +45,43 @@ const valuePortfolio = tickerValues => ({
  */
 export const getTransactionsThunk = userId => async dispatch => {
   try {
+    let userTransactions = await axios.get(`/api/transactions/${userId}`)
+    dispatch(getTransactions(userTransactions.data))
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const addTransactionThunk = (userId, stockDetails) => async dispatch => {
+  try {
+    const currentUser = await axios.get('/auth/me')
+    let transactionPrice = stockDetails.price
+    let newFunds = currentUser.funds + transactionPrice
+    if (newFunds >= 0) {
+      let symbol = stockDetails.symbol
+      let shareCount = stockDetails.shareCount
+      let orderType = stockDetails.orderType
+      let transaction = await axios.post(
+        `/api/transactions/${userId}`,
+        symbol,
+        shareCount,
+        transactionPrice,
+        orderType
+      )
+      dispatch(addTransaction(transaction))
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const getPortfolioThunk = userId => async dispatch => {
+  try {
     // to populate the user's portfolio, must first grab the user's transactions before calls may be made to the IEX API with a series of Promises to ensure the requests are fulfilled in order.
     await axios
       .get(`/api/transactions/${userId}`)
       .then(userTransactionsResponse => {
-        let userTransactions = userTransactionsResponse.data
-        // user transactions have been received, dispatch to reducer
-        dispatch(getTransactions(userTransactions))
+        // user transactions have been received, return response so separate IEX request may be made on tickers
         return userTransactionsResponse
       })
       .then(userTransactionsResponse => {
@@ -76,29 +106,6 @@ export const getTransactionsThunk = userId => async dispatch => {
             dispatch(valuePortfolio(valuedTickers))
           })
       })
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-export const addTransactionThunk = (userId, stockDetails) => async dispatch => {
-  try {
-    const currentUser = await axios.get('/auth/me')
-    let transactionPrice = stockDetails.price
-    let newFunds = currentUser.funds + transactionPrice
-    if (newFunds >= 0) {
-      let symbol = stockDetails.symbol
-      let shareCount = stockDetails.shareCount
-      let orderType = stockDetails.orderType
-      let transaction = await axios.post(
-        `/api/transactions/${userId}`,
-        symbol,
-        shareCount,
-        transactionPrice,
-        orderType
-      )
-      dispatch(addTransaction(transaction))
-    }
   } catch (err) {
     console.error(err)
   }
