@@ -15,14 +15,16 @@ install:
 before_script:
   - psql -c 'create database "ticker-talker-test";' -U postgres # remember to change this name if you change it elsewhere (e.g. package.json)
 script:
-  - npm test             # test the code
+  - npm test # test the code
   - npm run build-client # make the bundle
-
-# before_deploy:
-#   - rm -rf node_modules # omit from the tarball, since we skip cleanup
-# deploy:
-#   skip_cleanup: true # prevents travis from deleting the build
-#   provider: heroku
-#   app: YOUR-HEROKU-APP-NAME-HERE # see README
-#   api_key:
-#     secure: YOUR-***ENCRYPTED***-API-KEY-HERE # see README
+before_deploy: # omit node_modules, since we set skip_cleanup below
+  - rm -rf node_modules
+deploy: # see README for details on these keys
+  # prevents travis from deleting the build
+  skip_cleanup: true
+  provider: heroku
+  # app should be your heroku app name; see README
+  app: ticker-talker
+  # the secure key indicates an encrypted value; see README
+  api_key:
+    secure: JIGzlxVOatAe8sV0yHy3OkKxZRw7+0vPpOK8JlfWeVEMRy3nreyEDMq+rY7tgUl9bTb2ewoLtgz3AutzreXOzSRnOfyjKH7kzKlTqUOvHNUKo2bjD6Igd39HHevD4ohmok6NSpWb5Ui89AdHQZhLu6ashdpcwvY12XsYTYNhx4MS39ubpqlTRSqQ5a2yXdXWiJHxFG9K96CjCqNbFYOe8hchJeCU4uUgb/hUIzdxQz7+b7zm9X4QB6+h3Trf2R/XUun1Ge1ZbfEo0loGDKtZerMufo01eWZD2TZVVvl6JbImzGMdlqWFzEVUcdJv63NAW/w1V7TlS1b6pMAbYCjmbSEREGYkagHTEf6Aniup02VUeb9lrCoc0i+GlCfJkHzmv/j6PB0XtKByj4aGwMsv5oKsFklzGhYqt/NBRA50YGEGXutgPy95k1ZuVtFCwuQegUlEy7a7rkWfJ3GOKqbMMGN5yXvzJHtaNi28yhLlbhb9ocV5XE3t6QWSjaqCCb6Evaz6lahqMpagLb0yuWKYWhicz0Y4A6F5ZdzfiWifs3b5KOjaBfNpT2y7lKVGNwWdUl5zwDd7Ph8O1FK9bQgE/P+lBcETPNTovGNQb1xc0wuQ/zSJuiZOs3ubAGTp0Ul5NE9aAa6ZuWBAzj/TmIkmARdLFBJ9fsBz9NMwJ6uqYd4=
