@@ -28,7 +28,13 @@ export const getStockThunk = symbol => async dispatch => {
     let stockInfo = await axios.get(
       `https://api.iextrading.com/1.0/tops/last?symbols=${encodedSymbol}`
     )
-    dispatch(getStock(stockInfo))
+    let dispatchedStock
+    if (stockInfo.data[0]) {
+      dispatchedStock = stockInfo.data[0]
+    } else {
+      dispatchedStock = {symbol: null}
+    }
+    dispatch(getStock(dispatchedStock))
   } catch (err) {
     console.error(err)
   }
