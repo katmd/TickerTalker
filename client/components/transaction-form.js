@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {addTransactionThunk, getTransactionsThunk} from '../store/transactions'
 import {updateFundsThunk} from '../store/user'
-import {convertCentsToUSD} from '../utils/portfolio'
 import {Table} from './index'
 
 /**
@@ -48,44 +47,45 @@ class TransactionForm extends React.Component {
     )
   }
 
-  render() {
+  formatTableDetails() {
     const {stock} = this.props
     const {quantity, orderType} = this.state
+    if (stock.symbol !== undefined && stock.symbol !== null) {
+      return [
+        [
+          stock.symbol,
+          stock.latestPrice,
+          <select
+            onChange={this.handleChange}
+            name="orderType"
+            value={orderType}
+          >
+            <option value="BUY">BUY</option>
+            <option value="SELL">SELL</option>
+          </select>,
+          <input
+            name="quantity"
+            type="text"
+            placeholder="0"
+            value={quantity}
+            onChange={this.handleChange}
+          />
+        ]
+      ]
+    } else {
+      return [[]]
+    }
+  }
+
+  render() {
+    let transactionsTableHeader = ['Symbol', 'Price', 'Order Type', 'Quantity']
+    let transactionsTableData = this.formatTableDetails()
     return (
       <form onSubmit={this.handleSubmit}>
-        <table>
-          <tbody>
-            <tr>
-              <th>Symbol</th>
-              <th>Price</th>
-              <th>Order Type</th>
-              <th>Quantity</th>
-            </tr>
-            <tr>
-              <td>{stock.symbol}</td>
-              <td>{stock.latestPrice}</td>
-              <td>
-                <select
-                  onChange={this.handleChange}
-                  name="orderType"
-                  value={orderType}
-                >
-                  <option value="BUY">BUY</option>
-                  <option value="SELL">SELL</option>
-                </select>
-              </td>
-              <td>
-                <input
-                  name="quantity"
-                  type="text"
-                  placeholder="0"
-                  value={quantity}
-                  onChange={this.handleChange}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <Table
+          tableHeader={transactionsTableHeader}
+          tableData={transactionsTableData}
+        />
         <button id="submit-btn" type="submit">
           SUBMIT
         </button>
@@ -123,6 +123,7 @@ export default connect(mapState, mapDispatchToProps)(TransactionForm)
  */
 TransactionForm.propTypes = {
   userId: PropTypes.number,
+  funds: PropTypes.number,
   portfolio: PropTypes.object,
   stock: PropTypes.object
 }
