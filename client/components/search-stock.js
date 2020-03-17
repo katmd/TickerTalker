@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {getStockThunk} from '../store/stock'
 
@@ -56,23 +55,10 @@ class SearchStock extends React.Component {
 /**
  * CONTAINER
  */
-const mapState = state => {
-  return {
-    stock: state.stock
-  }
-}
-
 const mapDispatchToProps = dispatch => {
   return {
     getStock: symbol => dispatch(getStockThunk(symbol))
   }
 }
 
-export default connect(mapState, mapDispatchToProps)(SearchStock)
-
-/**
- * PROP TYPES
- */
-SearchStock.propTypes = {
-  stock: PropTypes.object
-}
+export default connect(null, mapDispatchToProps)(SearchStock)

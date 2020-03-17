@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {addTransactionThunk, getTransactionsThunk} from '../store/transactions'
 import {convertCentsToUSD} from '../utils/portfolio'
-import {SearchStock} from './index'
+import {SearchStock, TransactionForm} from './index'
 
 /**
  * COMPONENT
@@ -32,7 +32,7 @@ class Order extends React.Component {
         <div className="portfolio-metrics">
           <h2>Cash Funds - {convertCentsToUSD(funds)}</h2>
         </div>
-        <SearchStock stock={stock} errorMessage={searchErrorMessage} />
+        <SearchStock errorMessage={searchErrorMessage} />
       </div>
     )
   }
