@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {Table} from './index'
 import {getPortfolioThunk} from '../store/transactions'
-import {convertCentsToUSD} from '../utils/portfolio'
+import {convertToUSD} from '../utils/portfolio'
 
 /**
  * COMPONENT
@@ -32,9 +32,7 @@ class Portfolio extends React.Component {
     if (Object.keys(portfolio).length > 0) {
       let portfolioTableData = Object.keys(portfolio).map(entry => {
         let shareCount = portfolio[entry].shareCount
-        let currentValue = convertCentsToUSD(
-          portfolio[entry].value * shareCount
-        )
+        let currentValue = convertToUSD(portfolio[entry].value * shareCount)
         return [entry, shareCount, currentValue]
       })
       return portfolioTableData
@@ -51,8 +49,8 @@ class Portfolio extends React.Component {
       <div>
         <h1 className="page-header">Portfolio</h1>
         <div className="portfolio-metrics">
-          <h2>Total Value - {convertCentsToUSD(this.totalPortfolioValue())}</h2>
-          <h2>Cash Funds - {convertCentsToUSD(funds)}</h2>
+          <h2>Total Value - {convertToUSD(this.totalPortfolioValue())}</h2>
+          <h2>Cash Funds - {convertToUSD(funds)}</h2>
         </div>
         <Table
           tableHeader={portfolioTableHeader}

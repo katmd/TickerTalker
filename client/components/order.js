@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {addTransactionThunk, getTransactionsThunk} from '../store/transactions'
-import {convertCentsToUSD} from '../utils/portfolio'
+import {convertToUSD} from '../utils/portfolio'
 import {SearchStock, TransactionForm} from './index'
 
 /**
@@ -18,21 +18,25 @@ class Order extends React.Component {
     const {stock} = this.props
     if (stock.symbol === null) {
       return 'Symbol is invalid, please try your search again'
-    } else {
+    } else if (stock.symbol === undefined) {
       return null
+    } else {
+      return 'Valid'
     }
   }
 
   render() {
-    const {funds, stock} = this.props
+    const {funds} = this.props
     let searchErrorMessage = this.handleSearchError()
+    console.log('searchErrorMessage: ', searchErrorMessage)
     return (
       <div>
         <h1 className="page-header">Order</h1>
         <div className="portfolio-metrics">
-          <h2>Cash Funds - {convertCentsToUSD(funds)}</h2>
+          <h2>Cash Funds - {convertToUSD(funds)}</h2>
         </div>
         <SearchStock errorMessage={searchErrorMessage} />
+        {searchErrorMessage === 'Valid' && <TransactionForm />}
       </div>
     )
   }

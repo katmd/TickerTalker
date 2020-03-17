@@ -29,7 +29,7 @@ router.post('/:userId', async (req, res, next) => {
       let transaction = await currentUser.createTransaction({
         symbol: req.body.symbol,
         shareCount: req.body.shareCount,
-        price: req.body.price,
+        price: req.body.stockPrice,
         orderType: req.body.orderType
       })
       res.json(transaction)
@@ -54,9 +54,6 @@ router.get('/portfolio/:userId', async (req, res, next) => {
       })
       .then(userTransactionsResponse => {
         // user transactions have been received, return response so separate IEX request may be made on tickers
-        return userTransactionsResponse
-      })
-      .then(userTransactionsResponse => {
         let condensedPortfolio = condensePortfolio(userTransactionsResponse)
         console.log('Condensed portfolio: ', condensedPortfolio)
         // initial portfolio without valued stocks has been received
@@ -77,8 +74,7 @@ router.get('/portfolio/:userId', async (req, res, next) => {
               let tickerDetails = tickerDetailsResponse.data
               // populate portfolio and remove any stocks that a user has zero shares in
               for (let key of Object.keys(portfolio)) {
-                portfolio[key].value =
-                  tickerDetails[key].quote.latestPrice * 100
+                portfolio[key].value = tickerDetails[key].quote.latestPrice
                 portfolio[key].openDayPrice = tickerDetails[key].quote.open
                 if (portfolio[key].shareCount === 0) {
                   delete portfolio[key]

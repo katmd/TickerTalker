@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {getTransactionsThunk} from '../store/transactions'
-import {convertCentsToUSD} from '../utils/portfolio'
+import {convertToUSD} from '../utils/portfolio'
 import {Table} from './index'
 
 /**
@@ -18,9 +18,9 @@ class TransactionHistory extends React.Component {
     const {userTransactions} = this.props
     if (userTransactions.length > 0) {
       let transactionsTableData = userTransactions.map(transaction => {
-        let sharePriceInfo = `${
-          transaction.shareCount
-        } shares @ ${convertCentsToUSD(transaction.price)}`
+        let sharePriceInfo = `${transaction.shareCount} shares @ ${convertToUSD(
+          transaction.price
+        )}`
         let transactionDate = transaction.createdAt.slice(0, 10)
         return [
           transactionDate,

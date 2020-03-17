@@ -17,10 +17,15 @@ const Transaction = db.define('transaction', {
     }
   },
   price: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.DECIMAL,
     allowNull: false,
     validate: {
       notEmpty: true
+    },
+    get() {
+      // Workaround until sequelize issue #8019 is fixed
+      const value = this.getDataValue('price')
+      return value === null ? null : parseFloat(value)
     }
   },
   orderType: {

@@ -32,11 +32,16 @@ const User = db.define('user', {
     type: Sequelize.STRING
   },
   funds: {
-    type: Sequelize.INTEGER,
-    defaultValue: 500000,
+    type: Sequelize.DECIMAL,
+    defaultValue: 5000.0,
     allowNull: false,
     validate: {
       notEmpty: true
+    },
+    get() {
+      // Workaround until sequelize issue #8019 is fixed
+      const value = this.getDataValue('funds')
+      return value === null ? null : parseFloat(value)
     }
   }
 })
