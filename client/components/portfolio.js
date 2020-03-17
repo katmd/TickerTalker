@@ -51,15 +51,14 @@ class Portfolio extends React.Component {
       <div>
         <h1 className="page-header">Portfolio</h1>
         <div className="portfolio-metrics">
-          <h2>
-            Current Value - {convertCentsToUSD(this.totalPortfolioValue())}
-          </h2>
+          <h2>Total Value - {convertCentsToUSD(this.totalPortfolioValue())}</h2>
           <h2>Cash Funds - {convertCentsToUSD(funds)}</h2>
         </div>
         <Table
           tableHeader={portfolioTableHeader}
           tableData={portfolioTableData}
         />
+        <a href="https://iexcloud.io">Stock price data provided by IEX Cloud</a>
       </div>
     )
   }

@@ -23,18 +23,8 @@ const getStock = stock => ({
  */
 export const getStockThunk = symbol => async dispatch => {
   try {
-    // symbol must be encoded if it contains reserved characters
-    let encodedSymbol = encodeURIComponent(symbol)
-    let stockInfo = await axios.get(
-      `https://api.iextrading.com/1.0/tops/last?symbols=${encodedSymbol}`
-    )
-    let dispatchedStock
-    if (stockInfo.data[0]) {
-      dispatchedStock = stockInfo.data[0]
-    } else {
-      dispatchedStock = {symbol: null}
-    }
-    dispatch(getStock(dispatchedStock))
+    let stockInfo = await axios.get(`/api/stock/${symbol}`)
+    dispatch(getStock(stockInfo.data))
   } catch (err) {
     console.error(err)
   }

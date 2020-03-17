@@ -17,7 +17,7 @@ class Order extends React.Component {
   handleSearchError() {
     const {stock} = this.props
     if (stock.symbol === null) {
-      return 'Symbol is invalid, please search again'
+      return 'Symbol is invalid, please try your search again'
     } else {
       return null
     }

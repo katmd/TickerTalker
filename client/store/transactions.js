@@ -1,13 +1,11 @@
 import axios from 'axios'
-import {condensePortfolio, valueTickers} from '../utils/portfolio'
 
 /**
  * ACTION TYPES
  */
 const GET_TRANSACTIONS = 'GET_TRANSACTIONS'
 const ADD_TRANSACTION = 'ADD_TRANSACTION'
-const START_PORTFOLIO = 'START_PORTFOLIO'
-const VALUE_PORTFOLIO = 'VALUE_PORTFOLIO'
+const GET_PORTFOLIO = 'GET_PORTFOLIO'
 
 /**
  * INITIAL STATE
@@ -30,14 +28,9 @@ const addTransaction = transaction => ({
   transaction
 })
 
-const startPortfolio = portfolio => ({
-  type: START_PORTFOLIO,
+const getPortfolio = portfolio => ({
+  type: GET_PORTFOLIO,
   portfolio
-})
-
-const valuePortfolio = tickerValues => ({
-  type: VALUE_PORTFOLIO,
-  tickerValues
 })
 
 /**
@@ -77,35 +70,8 @@ export const addTransactionThunk = (userId, stockDetails) => async dispatch => {
 
 export const getPortfolioThunk = userId => async dispatch => {
   try {
-    // to populate the user's portfolio, must first grab the user's transactions before calls may be made to the IEX API with a series of Promises to ensure the requests are fulfilled in order.
-    await axios
-      .get(`/api/transactions/${userId}`)
-      .then(userTransactionsResponse => {
-        // user transactions have been received, return response so separate IEX request may be made on tickers
-        return userTransactionsResponse
-      })
-      .then(userTransactionsResponse => {
-        let condensedPortfolio = condensePortfolio(
-          userTransactionsResponse.data
-        )
-        // initial portfolio without valued stocks has been received, dispatch to reducer
-        dispatch(startPortfolio(condensedPortfolio))
-        // symbols must be encoded if they contain reserved characters
-        let encodedSymbols = encodeURIComponent(
-          Object.keys(condensedPortfolio).toString()
-        )
-        // separate axios request made to IEX API based on the user's transactions
-        axios
-          .get(
-            `https://api.iextrading.com/1.0/tops/last?symbols=${encodedSymbols}`
-          )
-          .then(tickerDetailsResponse => {
-            let tickerDetails = tickerDetailsResponse.data
-            let valuedTickers = valueTickers(tickerDetails)
-            // current values of ticker symbols have been received, dispatch to reducer
-            dispatch(valuePortfolio(valuedTickers))
-          })
-      })
+    let portfolio = await axios.get(`/api/transactions/portfolio/${userId}`)
+    dispatch(getPortfolio(portfolio.data))
   } catch (err) {
     console.error(err)
   }
@@ -122,16 +88,8 @@ export default function(state = defaultTransactions, action) {
       return Object.assign({}, state, {
         history: [...state.history, action.transaction]
       })
-    case START_PORTFOLIO:
+    case GET_PORTFOLIO:
       return Object.assign({}, state, {portfolio: action.portfolio})
-    case VALUE_PORTFOLIO: {
-      let portfolioCopy = {...state.portfolio}
-      let tickerValues = action.tickerValues
-      for (let key of Object.keys(portfolioCopy)) {
-        portfolioCopy[key].value = tickerValues[key]
-      }
-      return Object.assign({}, state, {portfolio: portfolioCopy})
-    }
     default:
       return state
   }
