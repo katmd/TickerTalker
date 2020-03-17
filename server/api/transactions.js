@@ -55,7 +55,6 @@ router.get('/portfolio/:userId', async (req, res, next) => {
       .then(userTransactionsResponse => {
         // user transactions have been received, return response so separate IEX request may be made on tickers
         let condensedPortfolio = condensePortfolio(userTransactionsResponse)
-        console.log('Condensed portfolio: ', condensedPortfolio)
         // initial portfolio without valued stocks has been received
         portfolio = condensedPortfolio
         // symbols must be encoded if they contain reserved characters

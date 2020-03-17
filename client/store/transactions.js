@@ -51,11 +51,8 @@ export const addTransactionThunk = (
   stockDetails
 ) => async dispatch => {
   try {
-    console.log('Thunk stock details: ', stockDetails)
-    console.log('User funds: ', userFunds, typeof userFunds)
     let transactionPrice = stockDetails.totalTransactionPrice
     let newFunds = userFunds - transactionPrice
-    console.log('Transaction old to new funds: ', userFunds, ' -> ', newFunds)
     if (newFunds >= 0) {
       let {data} = await axios.post(`/api/transactions/${userId}`, {
         symbol: stockDetails.symbol,

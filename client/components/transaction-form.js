@@ -35,7 +35,6 @@ class TransactionForm extends React.Component {
     orderType === 'BUY'
       ? (totalTransactionPrice = stockPriceToCents * quantity)
       : (totalTransactionPrice = -(stockPriceToCents * quantity))
-    console.log('Submitted total price: ', totalTransactionPrice)
     let stockDetails = {
       symbol: stock.symbol,
       shareCount: quantity,
@@ -52,7 +51,6 @@ class TransactionForm extends React.Component {
   render() {
     const {stock} = this.props
     const {quantity, orderType} = this.state
-    console.log('Form stock: ', stock)
     return (
       <form onSubmit={this.handleSubmit}>
         <table>

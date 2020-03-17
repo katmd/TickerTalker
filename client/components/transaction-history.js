@@ -16,7 +16,6 @@ class TransactionHistory extends React.Component {
 
   formatTableDetails() {
     const {userTransactions} = this.props
-    console.log('Transaction history: ', userTransactions)
     if (userTransactions.length > 0) {
       let transactionsTableData = userTransactions.map(transaction => {
         let sharePriceInfo = `${transaction.shareCount} shares @ ${convertToUSD(

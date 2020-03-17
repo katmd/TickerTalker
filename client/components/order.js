@@ -28,7 +28,6 @@ class Order extends React.Component {
   render() {
     const {funds} = this.props
     let searchErrorMessage = this.handleSearchError()
-    console.log('searchErrorMessage: ', searchErrorMessage)
     return (
       <div>
         <h1 className="page-header">Order</h1>
