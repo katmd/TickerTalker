@@ -63,13 +63,15 @@ export const logout = () => async dispatch => {
 
 export const updateFundsThunk = (
   userId,
-  transactionPrice
+  userFunds,
+  totalTransactionPrice
 ) => async dispatch => {
   try {
-    const currentUser = await axios.get('/auth/me')
-    let newFunds = currentUser.funds + transactionPrice
+    let newFunds = userFunds - totalTransactionPrice
     if (newFunds >= 0) {
-      await axios.put(`/api/users/${userId}`, transactionPrice)
+      await axios.put(`/api/users/${userId}`, {
+        transactionPrice: totalTransactionPrice
+      })
       dispatch(updateFunds(newFunds))
     }
   } catch (err) {

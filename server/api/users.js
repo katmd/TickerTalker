@@ -22,7 +22,7 @@ router.put('/:userId', async (req, res, next) => {
   const transactionPrice = req.body.transactionPrice
   try {
     const currentUser = await User.findByPk(userId)
-    const newFunds = currentUser.funds + transactionPrice
+    const newFunds = currentUser.funds - transactionPrice
     if (newFunds >= 0) {
       await currentUser.update({
         funds: newFunds

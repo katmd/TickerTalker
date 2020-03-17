@@ -46,7 +46,8 @@ class SearchStock extends React.Component {
             Search
           </button>
         </form>
-        {errorMessage && <p id="search-error">{errorMessage}</p>}
+        {errorMessage &&
+          errorMessage !== 'Valid' && <p id="search-error">{errorMessage}</p>}
       </div>
     )
   }

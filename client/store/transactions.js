@@ -38,30 +38,33 @@ const getPortfolio = portfolio => ({
  */
 export const getTransactionsThunk = userId => async dispatch => {
   try {
-    let userTransactions = await axios.get(`/api/transactions/${userId}`)
-    dispatch(getTransactions(userTransactions.data))
+    let {data} = await axios.get(`/api/transactions/${userId}`)
+    dispatch(getTransactions(data))
   } catch (err) {
     console.error(err)
   }
 }
 
-export const addTransactionThunk = (userId, stockDetails) => async dispatch => {
+export const addTransactionThunk = (
+  userId,
+  userFunds,
+  stockDetails
+) => async dispatch => {
   try {
-    const currentUser = await axios.get('/auth/me')
-    let transactionPrice = stockDetails.price
-    let newFunds = currentUser.funds + transactionPrice
+    console.log('Thunk stock details: ', stockDetails)
+    console.log('User funds: ', userFunds, typeof userFunds)
+    let transactionPrice = stockDetails.totalTransactionPrice
+    let newFunds = userFunds - transactionPrice
+    console.log('Transaction old to new funds: ', userFunds, ' -> ', newFunds)
     if (newFunds >= 0) {
-      let symbol = stockDetails.symbol
-      let shareCount = stockDetails.shareCount
-      let orderType = stockDetails.orderType
-      let transaction = await axios.post(
-        `/api/transactions/${userId}`,
-        symbol,
-        shareCount,
-        transactionPrice,
-        orderType
-      )
-      dispatch(addTransaction(transaction))
+      let {data} = await axios.post(`/api/transactions/${userId}`, {
+        symbol: stockDetails.symbol,
+        shareCount: stockDetails.shareCount,
+        stockPrice: stockDetails.stockPrice,
+        orderType: stockDetails.orderType,
+        transactionPrice: transactionPrice
+      })
+      dispatch(addTransaction(data))
     }
   } catch (err) {
     console.error(err)
@@ -70,8 +73,8 @@ export const addTransactionThunk = (userId, stockDetails) => async dispatch => {
 
 export const getPortfolioThunk = userId => async dispatch => {
   try {
-    let portfolio = await axios.get(`/api/transactions/portfolio/${userId}`)
-    dispatch(getPortfolio(portfolio.data))
+    let {data} = await axios.get(`/api/transactions/portfolio/${userId}`)
+    dispatch(getPortfolio(data))
   } catch (err) {
     console.error(err)
   }
