@@ -32,6 +32,14 @@ class TransactionForm extends React.Component {
 
     /* submitting form will compare the stock's current value and selected quantity to a user's available funds and, if selling, their total number of stocks under the same symbol */
 
+    // check if number of shares is a whole number, if not, return immediately
+    if (!Number.isInteger(+quantity) || +quantity < 1) {
+      this.setState({
+        errorMessage: 'Orders can only be placed on whole numbers of shares'
+      })
+      return
+    }
+
     // portfolio stats for current stock if in portfolio
     let portfolioShareCount = 0
     if (portfolio[stock.symbol] !== undefined) {
@@ -85,6 +93,7 @@ class TransactionForm extends React.Component {
             placeholder="0"
             value={quantity}
             onChange={this.handleChange}
+            required
           />
         </div>
       )
@@ -98,6 +107,7 @@ class TransactionForm extends React.Component {
               placeholder="0"
               value={quantity}
               onChange={this.handleChange}
+              required
             />
             <p>of {portfolio[stock.symbol].shareCount} shares</p>
           </div>
