@@ -42,12 +42,15 @@ class Portfolio extends React.Component {
   }
 
   render() {
-    const {funds} = this.props
+    const {funds, userFirstName, userLastName} = this.props
     let portfolioTableHeader = ['Symbol', 'Shares', 'Current Value']
     let portfolioTableData = this.formatTableDetails()
     return (
       <div>
         <h1 className="page-header">Portfolio</h1>
+        <p>
+          Welcome {userFirstName} {userLastName}
+        </p>
         <div className="portfolio-metrics">
           <h2>Total Value - {convertToUSD(this.totalPortfolioValue())}</h2>
           <h2>Cash Funds - {convertToUSD(funds)}</h2>
@@ -68,6 +71,8 @@ class Portfolio extends React.Component {
 const mapState = state => {
   return {
     userId: state.user.id,
+    userFirstName: state.user.firstName,
+    userLastName: state.user.lastName,
     funds: state.user.funds,
     portfolio: state.transactions.portfolio
   }
