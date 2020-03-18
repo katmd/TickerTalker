@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {addTransactionThunk, getTransactionsThunk} from '../store/transactions'
-import {updateFundsThunk} from '../store/user'
+import {transactStock} from '../store/stock'
 import {Table} from './index'
 
 /**
@@ -27,24 +26,21 @@ class TransactionForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    const {userId, funds, stock, addTransaction, updateFunds} = this.props
+    const {stock, transactStockDispatch} = this.props
     const {quantity, orderType} = this.state
     let stockPriceToCents = stock.latestPrice
     let totalTransactionPrice
     orderType === 'BUY'
       ? (totalTransactionPrice = stockPriceToCents * quantity)
       : (totalTransactionPrice = -(stockPriceToCents * quantity))
-    let stockDetails = {
+    let stockTransactionDetails = {
       symbol: stock.symbol,
       shareCount: quantity,
       orderType: orderType,
       stockPrice: stock.latestPrice,
       totalTransactionPrice: totalTransactionPrice
     }
-    Promise.all(
-      addTransaction(userId, funds, stockDetails),
-      updateFunds(userId, funds, totalTransactionPrice)
-    )
+    transactStockDispatch(stockTransactionDetails)
   }
 
   formatTableDetails() {
@@ -108,11 +104,7 @@ const mapState = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addTransaction: (userId, funds, stockDetails) =>
-      dispatch(addTransactionThunk(userId, funds, stockDetails)),
-    getTransactions: userId => dispatch(getTransactionsThunk(userId)),
-    updateFunds: (userId, funds, transactionPrice) =>
-      dispatch(updateFundsThunk(userId, funds, transactionPrice))
+    transactStockDispatch: stockDetails => dispatch(transactStock(stockDetails))
   }
 }
 
