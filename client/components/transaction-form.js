@@ -12,7 +12,8 @@ class TransactionForm extends React.Component {
     super()
     this.state = {
       quantity: '',
-      orderType: 'BUY'
+      orderType: 'BUY',
+      errorMessage: null
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -26,8 +27,17 @@ class TransactionForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    const {stock, transactStockDispatch} = this.props
+    const {stock, funds, portfolio, transactStockDispatch} = this.props
     const {quantity, orderType} = this.state
+
+    // portfolio stats for current stock if in portfolio
+    let portfolioShareCount = 0
+    if (portfolio[stock.symbol] !== undefined) {
+      portfolioShareCount = portfolio[stock.symbol].shareCount
+    }
+
+    // transaction details
+    let transactionShareCount = parseInt(quantity, 10)
     let stockPriceToCents = stock.latestPrice
     let totalTransactionPrice
     orderType === 'BUY'
@@ -35,12 +45,29 @@ class TransactionForm extends React.Component {
       : (totalTransactionPrice = -(stockPriceToCents * quantity))
     let stockTransactionDetails = {
       symbol: stock.symbol,
-      shareCount: quantity,
+      shareCount: transactionShareCount,
       orderType: orderType,
       stockPrice: stock.latestPrice,
       totalTransactionPrice: totalTransactionPrice
     }
-    transactStockDispatch(stockTransactionDetails)
+
+    // transaction results
+    let newFunds = funds - stockTransactionDetails.totalTransactionPrice
+    let newShareCount
+    orderType === 'BUY'
+      ? (newShareCount =
+          portfolioShareCount + stockTransactionDetails.shareCount)
+      : (newShareCount =
+          portfolioShareCount - stockTransactionDetails.shareCount)
+
+    if (newFunds <= 0) {
+      this.setState({errorMessage: 'Insufficient funds for transaction'})
+    } else if (newShareCount <= 0) {
+      this.setState({errorMessage: 'Insufficient shares for transaction'})
+    } else {
+      this.setState({errorMessage: null})
+      transactStockDispatch(stockTransactionDetails)
+    }
   }
 
   formatTableDetails() {
@@ -76,16 +103,20 @@ class TransactionForm extends React.Component {
   render() {
     let transactionsTableHeader = ['Symbol', 'Price', 'Order Type', 'Quantity']
     let transactionsTableData = this.formatTableDetails()
+    const {errorMessage} = this.state
     return (
-      <form onSubmit={this.handleSubmit}>
-        <Table
-          tableHeader={transactionsTableHeader}
-          tableData={transactionsTableData}
-        />
-        <button id="submit-btn" type="submit">
-          SUBMIT
-        </button>
-      </form>
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <Table
+            tableHeader={transactionsTableHeader}
+            tableData={transactionsTableData}
+          />
+          <button id="submit-btn" type="submit">
+            SUBMIT
+          </button>
+        </form>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+      </div>
     )
   }
 }
@@ -95,10 +126,9 @@ class TransactionForm extends React.Component {
  */
 const mapState = state => {
   return {
-    userId: state.user.id,
     funds: state.user.funds,
-    portfolio: state.transactions.portfolio,
-    stock: state.stock
+    stock: state.stock,
+    portfolio: state.transactions.portfolio
   }
 }
 
@@ -114,8 +144,7 @@ export default connect(mapState, mapDispatchToProps)(TransactionForm)
  * PROP TYPES
  */
 TransactionForm.propTypes = {
-  userId: PropTypes.number,
   funds: PropTypes.number,
-  portfolio: PropTypes.object,
-  stock: PropTypes.object
+  stock: PropTypes.object,
+  portfolio: PropTypes.object
 }
