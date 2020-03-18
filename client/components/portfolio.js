@@ -37,7 +37,7 @@ class Portfolio extends React.Component {
       })
       return portfolioTableData
     } else {
-      return []
+      return [[]]
     }
   }
 

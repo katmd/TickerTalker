@@ -30,6 +30,8 @@ class TransactionForm extends React.Component {
     const {stock, funds, portfolio, transactStockDispatch} = this.props
     const {quantity, orderType} = this.state
 
+    /* submitting form will compare the stock's current value and selected quantity to a user's available funds and, if selling, their total number of stocks under the same symbol */
+
     // portfolio stats for current stock if in portfolio
     let portfolioShareCount = 0
     if (portfolio[stock.symbol] !== undefined) {
@@ -60,6 +62,7 @@ class TransactionForm extends React.Component {
       : (newShareCount =
           portfolioShareCount - stockTransactionDetails.shareCount)
 
+    // check if submission is valid
     if (newFunds <= 0) {
       this.setState({errorMessage: 'Insufficient funds for transaction'})
     } else if (newShareCount <= 0) {

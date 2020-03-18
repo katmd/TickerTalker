@@ -38,11 +38,13 @@ class Order extends React.Component {
         <div className="portfolio-metrics">
           <h2>Cash Funds - {convertToUSD(funds)}</h2>
         </div>
+        {/* Only display the Search Stock page if the transaction is not ready for confirmation */}
         {readyForConfirmation ? (
           <TransactionConfirmation />
         ) : (
           <SearchStock errorMessage={searchErrorMessage} />
         )}
+        {/* Only display the Transaction Form if the symbol search was successful and the transaction is not ready for confirmation */}
         {searchErrorMessage === 'Valid' &&
           !readyForConfirmation && <TransactionForm />}
       </div>
