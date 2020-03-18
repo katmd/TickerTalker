@@ -71,9 +71,35 @@ class TransactionForm extends React.Component {
   }
 
   formatTableDetails() {
-    const {stock} = this.props
+    const {stock, portfolio} = this.props
     const {quantity, orderType} = this.state
     if (stock.symbol !== undefined && stock.symbol !== null) {
+      let quantityTableData = (
+        <div>
+          <input
+            name="quantity"
+            type="text"
+            placeholder="0"
+            value={quantity}
+            onChange={this.handleChange}
+          />
+        </div>
+      )
+      // If availble, show user how many stocks they have to sell
+      if (orderType === 'SELL' && portfolio[stock.symbol]) {
+        quantityTableData = (
+          <div>
+            <input
+              name="quantity"
+              type="text"
+              placeholder="0"
+              value={quantity}
+              onChange={this.handleChange}
+            />
+            <p>of {portfolio[stock.symbol].shareCount} shares</p>
+          </div>
+        )
+      }
       return [
         [
           stock.symbol,
@@ -86,13 +112,7 @@ class TransactionForm extends React.Component {
             <option value="BUY">BUY</option>
             <option value="SELL">SELL</option>
           </select>,
-          <input
-            name="quantity"
-            type="text"
-            placeholder="0"
-            value={quantity}
-            onChange={this.handleChange}
-          />
+          quantityTableData
         ]
       ]
     } else {
