@@ -26,6 +26,7 @@ class SearchStock extends React.Component {
   handleSubmit(event) {
     event.preventDefault()
     const {userId, getStock, getPortfolioSingleStock} = this.props
+    // Put both the stock's current details and any portfolio entries for the stock on the store state for access by the transaction form
     Promise.all(
       getStock(this.state.symbol),
       getPortfolioSingleStock(userId, this.state.symbol)

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {Table} from './index'
 import {getPortfolioThunk} from '../store/transactions'
-import {convertToUSD} from '../utils/portfolio'
+import {convertToUSD} from '../utils/conversion'
 
 /**
  * COMPONENT

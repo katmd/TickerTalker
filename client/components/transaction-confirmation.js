@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {addTransactionThunk} from '../store/transactions'
 import {updateFundsThunk} from '../store/user'
 import {clearStock} from '../store/stock'
-import {convertToUSD} from '../utils/portfolio'
+import {convertToUSD} from '../utils/conversion'
 
 /**
  * COMPONENT

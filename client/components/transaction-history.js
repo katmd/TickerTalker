@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {getTransactionsThunk} from '../store/transactions'
-import {convertToUSD} from '../utils/portfolio'
+import {convertToUSD} from '../utils/conversion'
 import {Table} from './index'
 
 /**
