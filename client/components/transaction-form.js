@@ -1,9 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {addTransactionThunk, getTransactionsThunk} from '../store/transactions'
-import {updateFundsThunk} from '../store/user'
-import {convertCentsToUSD} from '../utils/portfolio'
+import {transactStock} from '../store/stock'
 import {Table} from './index'
 
 /**
@@ -14,7 +12,8 @@ class TransactionForm extends React.Component {
     super()
     this.state = {
       quantity: '',
-      orderType: 'BUY'
+      orderType: 'BUY',
+      errorMessage: null
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -28,68 +27,96 @@ class TransactionForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    const {userId, funds, stock, addTransaction, updateFunds} = this.props
+    const {stock, funds, portfolio, transactStockDispatch} = this.props
     const {quantity, orderType} = this.state
+
+    // portfolio stats for current stock if in portfolio
+    let portfolioShareCount = 0
+    if (portfolio[stock.symbol] !== undefined) {
+      portfolioShareCount = portfolio[stock.symbol].shareCount
+    }
+
+    // transaction details
+    let transactionShareCount = parseInt(quantity, 10)
     let stockPriceToCents = stock.latestPrice
     let totalTransactionPrice
     orderType === 'BUY'
       ? (totalTransactionPrice = stockPriceToCents * quantity)
       : (totalTransactionPrice = -(stockPriceToCents * quantity))
-    let stockDetails = {
+    let stockTransactionDetails = {
       symbol: stock.symbol,
-      shareCount: quantity,
+      shareCount: transactionShareCount,
       orderType: orderType,
       stockPrice: stock.latestPrice,
       totalTransactionPrice: totalTransactionPrice
     }
-    Promise.all(
-      addTransaction(userId, funds, stockDetails),
-      updateFunds(userId, funds, totalTransactionPrice)
-    )
+
+    // transaction results
+    let newFunds = funds - stockTransactionDetails.totalTransactionPrice
+    let newShareCount
+    orderType === 'BUY'
+      ? (newShareCount =
+          portfolioShareCount + stockTransactionDetails.shareCount)
+      : (newShareCount =
+          portfolioShareCount - stockTransactionDetails.shareCount)
+
+    if (newFunds <= 0) {
+      this.setState({errorMessage: 'Insufficient funds for transaction'})
+    } else if (newShareCount <= 0) {
+      this.setState({errorMessage: 'Insufficient shares for transaction'})
+    } else {
+      this.setState({errorMessage: null})
+      transactStockDispatch(stockTransactionDetails)
+    }
+  }
+
+  formatTableDetails() {
+    const {stock} = this.props
+    const {quantity, orderType} = this.state
+    if (stock.symbol !== undefined && stock.symbol !== null) {
+      return [
+        [
+          stock.symbol,
+          stock.latestPrice,
+          <select
+            onChange={this.handleChange}
+            name="orderType"
+            value={orderType}
+          >
+            <option value="BUY">BUY</option>
+            <option value="SELL">SELL</option>
+          </select>,
+          <input
+            name="quantity"
+            type="text"
+            placeholder="0"
+            value={quantity}
+            onChange={this.handleChange}
+          />
+        ]
+      ]
+    } else {
+      return [[]]
+    }
   }
 
   render() {
-    const {stock} = this.props
-    const {quantity, orderType} = this.state
+    let transactionsTableHeader = ['Symbol', 'Price', 'Order Type', 'Quantity']
+    let transactionsTableData = this.formatTableDetails()
+    const {errorMessage} = this.state
     return (
-      <form onSubmit={this.handleSubmit}>
-        <table>
-          <tbody>
-            <tr>
-              <th>Symbol</th>
-              <th>Price</th>
-              <th>Order Type</th>
-              <th>Quantity</th>
-            </tr>
-            <tr>
-              <td>{stock.symbol}</td>
-              <td>{stock.latestPrice}</td>
-              <td>
-                <select
-                  onChange={this.handleChange}
-                  name="orderType"
-                  value={orderType}
-                >
-                  <option value="BUY">BUY</option>
-                  <option value="SELL">SELL</option>
-                </select>
-              </td>
-              <td>
-                <input
-                  name="quantity"
-                  type="text"
-                  placeholder="0"
-                  value={quantity}
-                  onChange={this.handleChange}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <button id="submit-btn" type="submit">
-          SUBMIT
-        </button>
-      </form>
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <Table
+            tableHeader={transactionsTableHeader}
+            tableData={transactionsTableData}
+          />
+          <button id="submit-btn" type="submit">
+            SUBMIT
+          </button>
+        </form>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+      </div>
     )
   }
 }
@@ -99,20 +126,15 @@ class TransactionForm extends React.Component {
  */
 const mapState = state => {
   return {
-    userId: state.user.id,
     funds: state.user.funds,
-    portfolio: state.transactions.portfolio,
-    stock: state.stock
+    stock: state.stock,
+    portfolio: state.transactions.portfolio
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    addTransaction: (userId, funds, stockDetails) =>
-      dispatch(addTransactionThunk(userId, funds, stockDetails)),
-    getTransactions: userId => dispatch(getTransactionsThunk(userId)),
-    updateFunds: (userId, funds, transactionPrice) =>
-      dispatch(updateFundsThunk(userId, funds, transactionPrice))
+    transactStockDispatch: stockDetails => dispatch(transactStock(stockDetails))
   }
 }
 
@@ -122,7 +144,7 @@ export default connect(mapState, mapDispatchToProps)(TransactionForm)
  * PROP TYPES
  */
 TransactionForm.propTypes = {
-  userId: PropTypes.number,
-  portfolio: PropTypes.object,
-  stock: PropTypes.object
+  funds: PropTypes.number,
+  stock: PropTypes.object,
+  portfolio: PropTypes.object
 }

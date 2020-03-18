@@ -6,6 +6,7 @@ import axios from 'axios'
 const GET_TRANSACTIONS = 'GET_TRANSACTIONS'
 const ADD_TRANSACTION = 'ADD_TRANSACTION'
 const GET_PORTFOLIO = 'GET_PORTFOLIO'
+const GET_PORTFOLIO_SINGLE_STOCK = 'GET_PORTFOLIO_SINGLE_STOCK'
 
 /**
  * INITIAL STATE
@@ -30,6 +31,11 @@ const addTransaction = transaction => ({
 
 const getPortfolio = portfolio => ({
   type: GET_PORTFOLIO,
+  portfolio
+})
+
+const getPortfolioSingleStock = portfolio => ({
+  type: GET_PORTFOLIO_SINGLE_STOCK,
   portfolio
 })
 
@@ -77,6 +83,20 @@ export const getPortfolioThunk = userId => async dispatch => {
   }
 }
 
+export const getPortfolioSingleStockThunk = (
+  userId,
+  symbol
+) => async dispatch => {
+  try {
+    let {data} = await axios.get(
+      `/api/transactions/portfolio/${userId}/${symbol}`
+    )
+    dispatch(getPortfolioSingleStock(data))
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 /**
  * REDUCER
  */
@@ -89,6 +109,8 @@ export default function(state = defaultTransactions, action) {
         history: [...state.history, action.transaction]
       })
     case GET_PORTFOLIO:
+      return Object.assign({}, state, {portfolio: action.portfolio})
+    case GET_PORTFOLIO_SINGLE_STOCK:
       return Object.assign({}, state, {portfolio: action.portfolio})
     default:
       return state

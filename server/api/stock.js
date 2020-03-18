@@ -9,12 +9,12 @@ router.get('/:symbol', async (req, res, next) => {
   try {
     let encodedSymbol = encodeURIComponent(symbol)
     stockInfo = await axios.get(
-      `https://cloud.iexapis.com/stable/stock/market/batch?types=quote&symbols=${encodedSymbol}&token=${
+      `https://cloud.iexapis.com/stable/stock/${encodedSymbol}/quote?token=${
         process.env.IEX_TOKEN
       }`
     )
   } catch (error) {
     res.json({symbol: null})
   }
-  res.json(stockInfo.data[symbol].quote)
+  res.json(stockInfo.data)
 })

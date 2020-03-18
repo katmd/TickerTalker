@@ -1,6 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {getStockThunk} from '../store/stock'
+import {getPortfolioSingleStockThunk} from '../store/transactions'
 
 /**
  * COMPONENT
@@ -23,8 +25,11 @@ class SearchStock extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    const {getStock} = this.props
-    getStock(this.state.symbol)
+    const {userId, getStock, getPortfolioSingleStock} = this.props
+    Promise.all(
+      getStock(this.state.symbol),
+      getPortfolioSingleStock(userId, this.state.symbol)
+    )
   }
 
   render() {
@@ -47,7 +52,9 @@ class SearchStock extends React.Component {
           </button>
         </form>
         {errorMessage &&
-          errorMessage !== 'Valid' && <p id="search-error">{errorMessage}</p>}
+          errorMessage !== 'Valid' && (
+            <p className="error-message">{errorMessage}</p>
+          )}
       </div>
     )
   }
@@ -56,10 +63,25 @@ class SearchStock extends React.Component {
 /**
  * CONTAINER
  */
-const mapDispatchToProps = dispatch => {
+const mapState = state => {
   return {
-    getStock: symbol => dispatch(getStockThunk(symbol))
+    userId: state.user.id
   }
 }
 
-export default connect(null, mapDispatchToProps)(SearchStock)
+const mapDispatchToProps = dispatch => {
+  return {
+    getStock: symbol => dispatch(getStockThunk(symbol)),
+    getPortfolioSingleStock: (userId, symbol) =>
+      dispatch(getPortfolioSingleStockThunk(userId, symbol))
+  }
+}
+
+export default connect(mapState, mapDispatchToProps)(SearchStock)
+
+/**
+ * PROP TYPES
+ */
+SearchStock.propTypes = {
+  userId: PropTypes.number
+}
