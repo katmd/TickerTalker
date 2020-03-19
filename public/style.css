@@ -159,6 +159,8 @@ a:link {
 .portfolio-metrics {
   display: flex;
   flex-direction: row;
+  background-color: rgb(71, 71, 71);
+  padding: 0px 20px 0px 20px;
 }
 
 .portfolio-metrics h2 {
