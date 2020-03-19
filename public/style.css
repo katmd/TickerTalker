@@ -189,6 +189,10 @@ a:link {
 }
 
 /* TRANSACTION STYLES */
+#submit-btn {
+  margin-left: 20px;
+}
+
 #transaction-confirmation {
   display: flex;
   flex-direction: column;
