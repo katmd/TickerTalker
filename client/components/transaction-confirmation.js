@@ -32,15 +32,8 @@ class TransactionConfirmation extends React.Component {
       updateFunds,
       clearStockDispatch
     } = this.props
-    let stockDetails = {
-      symbol: stock.symbol,
-      shareCount: stock.shareCount,
-      orderType: stock.orderType,
-      stockPrice: stock.latestPrice,
-      totalTransactionPrice: stock.totalTransactionPrice
-    }
     Promise.all(
-      addTransaction(userId, funds, stockDetails),
+      addTransaction(userId, funds, stock),
       updateFunds(userId, funds, stock.totalTransactionPrice)
     )
     clearStockDispatch()
