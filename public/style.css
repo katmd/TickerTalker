@@ -109,6 +109,7 @@ a:link {
   margin-right: 1em;
   width: 75px;
   height: 75px;
+  align-self: center;
 }
 
 /* AUTHENTICATION LANDING STYLES */
