@@ -54,18 +54,14 @@ export const getTransactionsThunk = userId => async dispatch => {
 export const addTransactionThunk = (
   userId,
   userFunds,
-  stockDetails
+  transactionDetails
 ) => async dispatch => {
   try {
-    let transactionPrice = stockDetails.totalTransactionPrice
+    let transactionPrice = transactionDetails.totalTransactionPrice
     let newFunds = userFunds - transactionPrice
     if (newFunds >= 0) {
       let {data} = await axios.post(`/api/transactions/${userId}`, {
-        symbol: stockDetails.symbol,
-        shareCount: stockDetails.shareCount,
-        stockPrice: stockDetails.stockPrice,
-        orderType: stockDetails.orderType,
-        transactionPrice: transactionPrice
+        transactionDetails: transactionDetails
       })
       dispatch(addTransaction(data))
     }

@@ -55,7 +55,7 @@ class TransactionConfirmation extends React.Component {
           </p>
           <p>
             {stock.orderType} order for {stock.shareCount} shares of{' '}
-            {stock.symbol} @ ${stock.stockPrice} for a total of{' '}
+            {stock.symbol} @ ${stock.latestPrice} for a total of{' '}
             {convertToUSD(Math.abs(stock.totalTransactionPrice))}
           </p>
           <p>
@@ -84,7 +84,6 @@ const mapState = state => {
   return {
     userId: state.user.id,
     funds: state.user.funds,
-    portfolio: state.transactions.portfolio,
     stock: state.stock
   }
 }
@@ -107,6 +106,5 @@ export default connect(mapState, mapDispatchToProps)(TransactionConfirmation)
 TransactionConfirmation.propTypes = {
   userId: PropTypes.number,
   funds: PropTypes.number,
-  portfolio: PropTypes.object,
   stock: PropTypes.object
 }

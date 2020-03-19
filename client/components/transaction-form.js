@@ -54,16 +54,15 @@ class TransactionForm extends React.Component {
 
     // transaction details
     let transactionShareCount = parseInt(quantity, 10)
-    let stockPriceToCents = stock.latestPrice
+    let stockPrice = stock.latestPrice
     let totalTransactionPrice
     orderType === 'BUY'
-      ? (totalTransactionPrice = stockPriceToCents * quantity)
-      : (totalTransactionPrice = -(stockPriceToCents * quantity))
+      ? (totalTransactionPrice = stockPrice * quantity)
+      : (totalTransactionPrice = -(stockPrice * quantity))
     let stockTransactionDetails = {
       symbol: stock.symbol,
       shareCount: transactionShareCount,
       orderType: orderType,
-      stockPrice: stock.latestPrice,
       totalTransactionPrice: totalTransactionPrice
     }
 

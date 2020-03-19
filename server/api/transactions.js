@@ -21,16 +21,17 @@ router.get('/:userId', async (req, res, next) => {
 // Add a user's new transaction
 router.post('/:userId', async (req, res, next) => {
   const userId = req.params.userId
-  const transactionPrice = req.body.transactionPrice
+  const transactionDetails = req.body.transactionDetails
   try {
     const currentUser = await User.findByPk(userId)
-    const newFunds = currentUser.funds - transactionPrice
+    const totalTransactionPrice = transactionDetails.totalTransactionPrice
+    const newFunds = currentUser.funds - totalTransactionPrice
     if (newFunds >= 0) {
       let transaction = await currentUser.createTransaction({
-        symbol: req.body.symbol,
-        shareCount: req.body.shareCount,
-        price: req.body.stockPrice,
-        orderType: req.body.orderType
+        symbol: transactionDetails.symbol,
+        shareCount: transactionDetails.shareCount,
+        price: transactionDetails.latestPrice,
+        orderType: transactionDetails.orderType
       })
       res.json(transaction)
     } else {
