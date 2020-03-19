@@ -2,7 +2,7 @@ body {
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
     'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   background-color: rgb(31, 31, 31);
-  color: rgb(141, 141, 141);
+  color: rgb(211, 211, 211);
 }
 
 a {
@@ -35,7 +35,6 @@ label {
   background-color: rgb(51, 51, 51);
   margin: 0;
   padding: 20px;
-  color: rgb(141, 141, 141);
 }
 
 form div {
