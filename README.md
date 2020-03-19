@@ -32,10 +32,12 @@ createdb $MY_APP_NAME-test
 
 > By default, running `npm test` will use `ticker-talker-test`, while regular development uses `ticker-talker`
 
-4.  Run `npm run start-dev` to bundle and run the app on the localhost (defaulted to `localhost:8080/`)
+4.  Run `npm run start-dev` to bundle and run the app on the localhost (defaulted to `localhost:8080`)
 
 ## Credits
 
 Template Code: [Fullstack Academy](https://github.com/FullstackAcademy)
+
 Stock price data: [IEX Cloud](https://iexcloud.io)
+
 Image Icon: [game-icons.net](https://game-icons.net/)
