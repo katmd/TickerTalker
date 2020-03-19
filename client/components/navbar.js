@@ -4,9 +4,12 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {logout} from '../store'
 
-const Navbar = ({handleClick, isLoggedIn}) => (
-  <div>
-    <h1>Ticker Talker</h1>
+const Navbar = ({handleClick, isLoggedIn, firstName, lastName}) => (
+  <div id="navbar">
+    <div id="site-name">
+      <img className="main-icon" src="/images/clockwork.png" />
+      <h1>Ticker Talker</h1>
+    </div>
     <nav>
       {isLoggedIn ? (
         <div>
@@ -15,7 +18,7 @@ const Navbar = ({handleClick, isLoggedIn}) => (
           <Link to="/transaction-history">Transactions</Link>
           <Link to="/order">Order</Link>
           <a href="#" onClick={handleClick}>
-            Logout
+            Logout ({firstName} {lastName})
           </a>
         </div>
       ) : (
@@ -26,7 +29,6 @@ const Navbar = ({handleClick, isLoggedIn}) => (
         </div>
       )}
     </nav>
-    <hr />
   </div>
 )
 
@@ -35,7 +37,9 @@ const Navbar = ({handleClick, isLoggedIn}) => (
  */
 const mapState = state => {
   return {
-    isLoggedIn: !!state.user.id
+    isLoggedIn: !!state.user.id,
+    firstName: state.user.firstName,
+    lastName: state.user.lastName
   }
 }
 

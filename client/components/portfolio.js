@@ -55,27 +55,35 @@ class Portfolio extends React.Component {
           <h2>Total Value - {convertToUSD(this.totalPortfolioValue())}</h2>
           <h2>Cash Funds - {convertToUSD(funds)}</h2>
         </div>
-        {Object.keys(portfolio).length === 0 && (
+        {Object.keys(portfolio).length === 0 ? (
           <div>No stocks in portfolio</div>
-        )}
-        {Object.keys(portfolio).map((entry, idx) => {
-          let portfolioDetails = this.formatPortfolio(portfolio[entry])
-          return (
-            <div
-              key={idx}
-              performance={portfolioDetails.stockPerfomance}
-              className="portfolio-entry"
-            >
-              <div className="portfolio-qty">
-                ({entry}) - {portfolioDetails.shareCount} shares
-              </div>
-              <div className="portfolio-val">
-                {portfolioDetails.currentValue}
-              </div>
+        ) : (
+          <div className="portfolio">
+            <div className="portfolio-header">
+              <div>Shares</div>
+              <div>Current Value</div>
             </div>
-          )
-        })}
-        <a href="https://iexcloud.io">Stock price data provided by IEX Cloud</a>
+            <div className="portfolio-results">
+              {Object.keys(portfolio).map((entry, idx) => {
+                let portfolioDetails = this.formatPortfolio(portfolio[entry])
+                return (
+                  <div
+                    key={idx}
+                    performance={portfolioDetails.stockPerfomance}
+                    className="portfolio-entry"
+                  >
+                    <div className="portfolio-qty">
+                      ({entry}) - {portfolioDetails.shareCount} shares
+                    </div>
+                    <div className="portfolio-val">
+                      {portfolioDetails.currentValue}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
       </div>
     )
   }

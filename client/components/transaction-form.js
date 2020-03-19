@@ -26,7 +26,7 @@ class TransactionForm extends React.Component {
     if (targetName === 'quantity' && !Number.isInteger(+targetValue)) {
       this.setState({
         errorMessage:
-          'Orders can only be placed on positive, whole numbers of shares'
+          'ERROR: Orders can only be placed on positive, whole numbers of shares'
       })
       return
     } else {
@@ -77,9 +77,11 @@ class TransactionForm extends React.Component {
 
     // check if submission is valid
     if (newFunds <= 0) {
-      this.setState({errorMessage: 'Insufficient funds for transaction'})
+      this.setState({errorMessage: 'ERROR: Insufficient funds for transaction'})
     } else if (newShareCount <= 0) {
-      this.setState({errorMessage: 'Insufficient shares for transaction'})
+      this.setState({
+        errorMessage: 'ERROR: Insufficient shares for transaction'
+      })
     } else {
       this.setState({errorMessage: null})
       transactStockDispatch(stockTransactionDetails)

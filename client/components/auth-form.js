@@ -9,42 +9,76 @@ import {auth} from '../store'
 const AuthForm = props => {
   const {name, displayName, handleSubmit, error} = props
   return (
-    <div>
-      <form onSubmit={handleSubmit} name={name}>
-        {name === 'signup' && (
-          <div id="name-signup">
-            <div>
-              <label htmlFor="firstName">
-                <small>First Name</small>
-              </label>
-              <input name="firstName" type="text" />
-            </div>
-            <div>
-              <label htmlFor="lastName">
-                <small>Last Name</small>
-              </label>
-              <input name="lastName" type="text" />
-            </div>
+    <div className="authentication-page">
+      <div className="landing">
+        <div className="site-info">
+          <h2>Welcome to Ticker Talker</h2>
+          <p>
+            Utilize our tools to simulate your stock market choices and
+            performance.
+          </p>
+          <p>
+            View your portfolio of stocks with indicators of their performance
+            compared to the current day's open prices.
+          </p>
+          <p>
+            Review your past orders to audit your transaction history and see
+            what the stock was valued at in the past.
+          </p>
+        </div>
+        <form
+          className="authentication-form"
+          onSubmit={handleSubmit}
+          name={name}
+        >
+          <h3>{name.toUpperCase()}</h3>
+          {name === 'signup' && (
+            <React.Fragment>
+              <div>
+                <label htmlFor="firstName">
+                  <small>First Name</small>
+                </label>
+                <input name="firstName" type="text" />
+              </div>
+              <div>
+                <label htmlFor="lastName">
+                  <small>Last Name</small>
+                </label>
+                <input name="lastName" type="text" />
+              </div>
+            </React.Fragment>
+          )}
+          <div>
+            <label htmlFor="email">
+              <small>Email</small>
+            </label>
+            <input name="email" type="text" />
           </div>
-        )}
-        <div>
-          <label htmlFor="email">
-            <small>Email</small>
-          </label>
-          <input name="email" type="text" />
-        </div>
-        <div>
-          <label htmlFor="password">
-            <small>Password</small>
-          </label>
-          <input name="password" type="password" />
-        </div>
-        <div>
-          <button type="submit">{displayName}</button>
-        </div>
-        {error && error.response && <div> {error.response.data} </div>}
-      </form>
-      <a href="/auth/google">{displayName} with Google</a>
+          <div>
+            <label htmlFor="password">
+              <small>Password</small>
+            </label>
+            <input name="password" type="password" />
+          </div>
+          <div>
+            <button type="submit">{displayName}</button>
+          </div>
+          {error && error.response && <div> {error.response.data} </div>}
+        </form>
+      </div>
+      <div className="landing-footer">
+        <a className="external-link" href="https://iexcloud.io">
+          Stock price data provided by IEX Cloud
+        </a>{' '}
+        |{' '}
+        <a
+          className="external-link"
+          href="https://github.com/katmd/TickerTalker"
+        >
+          Github
+        </a>
+        <p>Test Email: murphy@email.com - Test Pass: 123</p>
+      </div>
     </div>
   )
 }
