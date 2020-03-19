@@ -47,7 +47,7 @@ class Portfolio extends React.Component {
   }
 
   render() {
-    const {funds, userFirstName, userLastName, portfolio} = this.props
+    const {funds, portfolio} = this.props
     return (
       <div>
         <h1 className="page-header">Portfolio</h1>
@@ -55,24 +55,26 @@ class Portfolio extends React.Component {
           <h2>Total Value - {convertToUSD(this.totalPortfolioValue())}</h2>
           <h2>Cash Funds - {convertToUSD(funds)}</h2>
         </div>
-        {portfolio &&
-          Object.keys(portfolio).map((entry, idx) => {
-            let portfolioDetails = this.formatPortfolio(portfolio[entry])
-            return (
-              <div
-                key={idx}
-                performance={portfolioDetails.stockPerfomance}
-                className="portfolio-entry"
-              >
-                <div className="portfolio-qty">
-                  {entry} - {portfolioDetails.shareCount} shares
-                </div>
-                <div className="portfolio-val">
-                  {portfolioDetails.currentValue}
-                </div>
+        {Object.keys(portfolio).length === 0 && (
+          <div>No stocks in portfolio</div>
+        )}
+        {Object.keys(portfolio).map((entry, idx) => {
+          let portfolioDetails = this.formatPortfolio(portfolio[entry])
+          return (
+            <div
+              key={idx}
+              performance={portfolioDetails.stockPerfomance}
+              className="portfolio-entry"
+            >
+              <div className="portfolio-qty">
+                ({entry}) - {portfolioDetails.shareCount} shares
               </div>
-            )
-          })}
+              <div className="portfolio-val">
+                {portfolioDetails.currentValue}
+              </div>
+            </div>
+          )
+        })}
         <a href="https://iexcloud.io">Stock price data provided by IEX Cloud</a>
       </div>
     )
