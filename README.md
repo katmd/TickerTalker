@@ -5,6 +5,7 @@ Utilize tools to simulate stock market choices and performance.
 ## Build Status
 
 Visit the deployed app at [https://ticker-talker.herokuapp.com/](https://ticker-talker.herokuapp.com/)
+
 [![Build Status](https://travis-ci.org/katmd/TickerTalker.svg?branch=master)](https://travis-ci.org/katmd/TickerTalker) [![Coverage Status](https://coveralls.io/repos/github/katmd/TickerTalker/badge.svg?branch=master)](https://coveralls.io/github/katmd/TickerTalker?branch=master)
 
 ## Technologies Used
@@ -37,4 +38,4 @@ createdb $MY_APP_NAME-test
 
 Template Code: [Fullstack Academy](https://github.com/FullstackAcademy)
 Stock price data: [IEX Cloud](https://iexcloud.io)
-Image Icon: [game-icons.net](https://game-icons.net/1x1/lorc/clockwork.html)
+Image Icon: [game-icons.net](https://game-icons.net/)

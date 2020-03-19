@@ -1,5 +1,6 @@
 body {
-  font-family: sans-serif;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+    'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   background-color: rgb(31, 31, 31);
   color: rgb(141, 141, 141);
 }
@@ -40,6 +41,33 @@ label {
 form div {
   margin: 1em;
   display: inline-block;
+}
+
+button {
+  padding: 5pxem 10px;
+  margin: 0 5px 5px 0;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1em;
+  font-weight: bold;
+  background-color: steelblue;
+  border-color: steelblue;
+  color: black;
+}
+
+button:hover {
+  background-color: rgb(87, 159, 218);
+  border-color: rgb(87, 159, 218);
+}
+
+button#cancel-btn {
+  background-color: lightblue;
+  border-color: lightblue;
+}
+
+button#cancel-btn:hover {
+  background-color: gray;
+  border-color: gray;
 }
 
 /* NAVBAR STYLES */
