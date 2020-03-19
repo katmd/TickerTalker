@@ -7,7 +7,7 @@ import {logout} from '../store'
 const Navbar = ({handleClick, isLoggedIn, firstName, lastName}) => (
   <div id="navbar">
     <div id="site-name">
-      <img className="main-icon" src="/images/clockwork.png" />
+      <img className="main-icon" src="/images/clockwork_transparent.png" />
       <h1>Ticker Talker</h1>
     </div>
     <nav>
