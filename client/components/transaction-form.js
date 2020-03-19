@@ -130,7 +130,7 @@ class TransactionForm extends React.Component {
             SUBMIT
           </button>
         </form>
-        {/* if availble, show user how many stocks they have to sell */}
+        {/* if available, show user how many stocks they have to sell */}
         {orderType === 'SELL' &&
           portfolio[stock.symbol] && (
             <p>

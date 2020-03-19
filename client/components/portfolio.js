@@ -33,7 +33,20 @@ class Portfolio extends React.Component {
       let portfolioTableData = Object.keys(portfolio).map(entry => {
         let shareCount = portfolio[entry].shareCount
         let currentValue = convertToUSD(portfolio[entry].value * shareCount)
-        return [entry, shareCount, currentValue]
+        let openDayPriceValue = convertToUSD(
+          portfolio[entry].openDayPrice * shareCount
+        )
+        let stockPerfomance = 'equal'
+        if (currentValue < openDayPriceValue) {
+          stockPerfomance = 'down'
+        } else if (currentValue > openDayPriceValue) {
+          stockPerfomance = 'up'
+        }
+        return [
+          <p className={stockPerfomance}>{entry}</p>,
+          <p>shareCount</p>,
+          <p className={stockPerfomance}>{currentValue}</p>
+        ]
       })
       return portfolioTableData
     } else {
