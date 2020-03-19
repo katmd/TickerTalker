@@ -51,9 +51,6 @@ class Portfolio extends React.Component {
     return (
       <div>
         <h1 className="page-header">Portfolio</h1>
-        <p>
-          Welcome {userFirstName} {userLastName}
-        </p>
         <div className="portfolio-metrics">
           <h2>Total Value - {convertToUSD(this.totalPortfolioValue())}</h2>
           <h2>Cash Funds - {convertToUSD(funds)}</h2>

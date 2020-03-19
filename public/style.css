@@ -26,12 +26,24 @@ form div {
   background-color: lightgreen;
 }
 
+.portfolio-entry[performance='up'] .portfolio-val::after {
+  content: ' \2191';
+}
+
 .portfolio-entry[performance='down'] {
   color: darkred;
   background-color: rgb(255, 137, 137);
 }
 
+.portfolio-entry[performance='down'] .portfolio-val::after {
+  content: ' \2193';
+}
+
 .portfolio-entry[performance='equal'] {
   color: rgb(97, 97, 97);
   background-color: lightgray;
+}
+
+.portfolio-entry[performance='equal'] .portfolio-val::after {
+  content: ' \2212';
 }
