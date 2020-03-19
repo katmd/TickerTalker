@@ -21,16 +21,17 @@ form div {
 }
 
 /* Stock Portfolio Performance */
-.up {
+.portfolio-entry[performance='up'] {
   color: darkgreen;
   background-color: lightgreen;
 }
 
-.down {
+.portfolio-entry[performance='down'] {
   color: darkred;
   background-color: rgb(255, 137, 137);
 }
 
-.equal {
-  color: gray;
+.portfolio-entry[performance='equal'] {
+  color: rgb(97, 97, 97);
+  background-color: lightgray;
 }

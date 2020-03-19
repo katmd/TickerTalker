@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {Table} from './index'
 import {getPortfolioThunk} from '../store/transactions'
 import {convertToUSD} from '../utils/conversion'
 
@@ -27,37 +26,28 @@ class Portfolio extends React.Component {
     }
   }
 
-  formatTableDetails() {
-    const {portfolio} = this.props
-    if (Object.keys(portfolio).length > 0) {
-      let portfolioTableData = Object.keys(portfolio).map(entry => {
-        let shareCount = portfolio[entry].shareCount
-        let currentValue = convertToUSD(portfolio[entry].value * shareCount)
-        let openDayPriceValue = convertToUSD(
-          portfolio[entry].openDayPrice * shareCount
-        )
-        let stockPerfomance = 'equal'
-        if (currentValue < openDayPriceValue) {
-          stockPerfomance = 'down'
-        } else if (currentValue > openDayPriceValue) {
-          stockPerfomance = 'up'
-        }
-        return [
-          <p className={stockPerfomance}>{entry}</p>,
-          <p>shareCount</p>,
-          <p className={stockPerfomance}>{currentValue}</p>
-        ]
-      })
-      return portfolioTableData
-    } else {
-      return [[]]
+  formatPortfolio(portfolioEntry) {
+    let shareCount = portfolioEntry.shareCount
+    let currentValue = convertToUSD(portfolioEntry.value * shareCount)
+    let openDayPriceValue = convertToUSD(
+      portfolioEntry.openDayPrice * shareCount
+    )
+    let stockPerfomance = 'equal'
+    if (currentValue < openDayPriceValue) {
+      stockPerfomance = 'down'
+    } else if (currentValue > openDayPriceValue) {
+      stockPerfomance = 'up'
+    }
+    return {
+      shareCount: shareCount,
+      currentValue: currentValue,
+      openDayPriceValue: openDayPriceValue,
+      stockPerfomance: stockPerfomance
     }
   }
 
   render() {
-    const {funds, userFirstName, userLastName} = this.props
-    let portfolioTableHeader = ['Symbol', 'Shares', 'Current Value']
-    let portfolioTableData = this.formatTableDetails()
+    const {funds, userFirstName, userLastName, portfolio} = this.props
     return (
       <div>
         <h1 className="page-header">Portfolio</h1>
@@ -68,10 +58,24 @@ class Portfolio extends React.Component {
           <h2>Total Value - {convertToUSD(this.totalPortfolioValue())}</h2>
           <h2>Cash Funds - {convertToUSD(funds)}</h2>
         </div>
-        <Table
-          tableHeader={portfolioTableHeader}
-          tableData={portfolioTableData}
-        />
+        {portfolio &&
+          Object.keys(portfolio).map((entry, idx) => {
+            let portfolioDetails = this.formatPortfolio(portfolio[entry])
+            return (
+              <div
+                key={idx}
+                performance={portfolioDetails.stockPerfomance}
+                className="portfolio-entry"
+              >
+                <div className="portfolio-qty">
+                  {entry} - {portfolioDetails.shareCount} shares
+                </div>
+                <div className="portfolio-val">
+                  {portfolioDetails.currentValue}
+                </div>
+              </div>
+            )
+          })}
         <a href="https://iexcloud.io">Stock price data provided by IEX Cloud</a>
       </div>
     )
