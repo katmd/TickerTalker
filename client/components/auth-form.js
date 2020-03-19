@@ -67,6 +67,7 @@ const AuthForm = props => {
         </form>
       </div>
       <div className="landing-footer">
+        <p>Test Email: murphy@email.com - Test Pass: 123</p>
         <a className="external-link" href="https://iexcloud.io">
           Stock price data provided by IEX Cloud
         </a>{' '}
@@ -77,7 +78,6 @@ const AuthForm = props => {
         >
           Github
         </a>
-        <p>Test Email: murphy@email.com - Test Pass: 123</p>
       </div>
     </div>
   )

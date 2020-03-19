@@ -188,6 +188,20 @@ a:link {
   content: ' \2212';
 }
 
+/* TRANSACTION STYLES */
+#transaction-confirmation {
+  display: flex;
+  flex-direction: column;
+}
+
+#transaction-details {
+  background-color: rgb(11, 11, 11);
+  border-radius: 5px;
+  padding: 20px;
+  width: 50vh;
+  min-width: 500px;
+}
+
 /* TABLE STYLES */
 .table-container {
   display: flex;
@@ -201,7 +215,7 @@ a:link {
 #table {
   text-align: center;
   border-collapse: collapse;
-  border-radius: 10px;
+  border-radius: 5px;
   width: 100%;
   border: 1px solid rgb(65, 80, 70);
   color: black;

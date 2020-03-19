@@ -47,7 +47,7 @@ class TransactionConfirmation extends React.Component {
   render() {
     const {stock, funds} = this.props
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form id="transaction-confirmation" onSubmit={this.handleSubmit}>
         <h3>Transaction Details</h3>
         <div id="transaction-details">
           <p>
@@ -62,16 +62,18 @@ class TransactionConfirmation extends React.Component {
             New Balance: {convertToUSD(funds - stock.totalTransactionPrice)}
           </p>
         </div>
-        <button id="confirm-btn" type="submit">
-          CONFIRM
-        </button>
-        <button
-          id="cancel-btn"
-          type="button"
-          onClick={() => this.handleCancel()}
-        >
-          CANCEL
-        </button>
+        <div className="transaction-buttons">
+          <button id="confirm-btn" type="submit">
+            CONFIRM
+          </button>
+          <button
+            id="cancel-btn"
+            type="button"
+            onClick={() => this.handleCancel()}
+          >
+            CANCEL
+          </button>
+        </div>
       </form>
     )
   }
