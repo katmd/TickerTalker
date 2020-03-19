@@ -87,8 +87,6 @@ class Portfolio extends React.Component {
 const mapState = state => {
   return {
     userId: state.user.id,
-    userFirstName: state.user.firstName,
-    userLastName: state.user.lastName,
     funds: state.user.funds,
     portfolio: state.transactions.portfolio
   }
@@ -106,6 +104,7 @@ export default connect(mapState, mapDispatchToProps)(Portfolio)
  * PROP TYPES
  */
 Portfolio.propTypes = {
+  userId: PropTypes.number,
   funds: PropTypes.number,
   portfolio: PropTypes.object
 }
