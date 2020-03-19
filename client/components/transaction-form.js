@@ -82,37 +82,9 @@ class TransactionForm extends React.Component {
   }
 
   formatTableDetails() {
-    const {stock, portfolio} = this.props
+    const {stock} = this.props
     const {quantity, orderType} = this.state
     if (stock.symbol !== undefined && stock.symbol !== null) {
-      let quantityTableData = (
-        <div>
-          <input
-            name="quantity"
-            type="text"
-            placeholder="0"
-            value={quantity}
-            onChange={this.handleChange}
-            required
-          />
-        </div>
-      )
-      // If availble, show user how many stocks they have to sell
-      if (orderType === 'SELL' && portfolio[stock.symbol]) {
-        quantityTableData = (
-          <div>
-            <input
-              name="quantity"
-              type="text"
-              placeholder="0"
-              value={quantity}
-              onChange={this.handleChange}
-              required
-            />
-            <p>of {portfolio[stock.symbol].shareCount} shares</p>
-          </div>
-        )
-      }
       return [
         [
           stock.symbol,
@@ -125,7 +97,16 @@ class TransactionForm extends React.Component {
             <option value="BUY">BUY</option>
             <option value="SELL">SELL</option>
           </select>,
-          quantityTableData
+          <div>
+            <input
+              name="quantity"
+              type="text"
+              placeholder="0"
+              value={quantity}
+              onChange={this.handleChange}
+              required
+            />
+          </div>
         ]
       ]
     } else {
@@ -136,7 +117,8 @@ class TransactionForm extends React.Component {
   render() {
     let transactionsTableHeader = ['Symbol', 'Price', 'Order Type', 'Quantity']
     let transactionsTableData = this.formatTableDetails()
-    const {errorMessage} = this.state
+    const {stock, portfolio} = this.props
+    const {orderType, errorMessage} = this.state
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -148,6 +130,14 @@ class TransactionForm extends React.Component {
             SUBMIT
           </button>
         </form>
+        {/* if availble, show user how many stocks they have to sell */}
+        {orderType === 'SELL' &&
+          portfolio[stock.symbol] && (
+            <p>
+              You have {portfolio[stock.symbol].shareCount} shares of{' '}
+              {stock.symbol} available
+            </p>
+          )}
         {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>
     )
