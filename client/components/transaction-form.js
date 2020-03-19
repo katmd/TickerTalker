@@ -20,8 +20,22 @@ class TransactionForm extends React.Component {
   }
 
   handleChange() {
+    let targetName = event.target.name
+    let targetValue = event.target.value
+    // check if number of shares is a positive whole number, if not, return error immediately
+    if (targetName === 'quantity' && !Number.isInteger(+targetValue)) {
+      this.setState({
+        errorMessage:
+          'Orders can only be placed on positive, whole numbers of shares'
+      })
+      return
+    } else {
+      this.setState({
+        errorMessage: null
+      })
+    }
     this.setState({
-      [event.target.name]: event.target.value
+      [targetName]: targetValue
     })
   }
 
@@ -31,14 +45,6 @@ class TransactionForm extends React.Component {
     const {quantity, orderType} = this.state
 
     /* submitting form will compare the stock's current value and selected quantity to a user's available funds and, if selling, their total number of stocks under the same symbol */
-
-    // check if number of shares is a whole number, if not, return immediately
-    if (!Number.isInteger(+quantity) || +quantity < 1) {
-      this.setState({
-        errorMessage: 'Orders can only be placed on whole numbers of shares'
-      })
-      return
-    }
 
     // portfolio stats for current stock if in portfolio
     let portfolioShareCount = 0
