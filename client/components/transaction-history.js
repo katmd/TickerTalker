@@ -31,7 +31,7 @@ class TransactionHistory extends React.Component {
       })
       return transactionsTableData
     } else {
-      return []
+      return [[]]
     }
   }
 
@@ -41,10 +41,14 @@ class TransactionHistory extends React.Component {
     return (
       <div>
         <h1 className="page-header">Transaction History</h1>
-        <Table
-          tableHeader={transactionsTableHeader}
-          tableData={transactionsTableData}
-        />
+        {transactionsTableData.length > 1 ? (
+          <Table
+            tableHeader={transactionsTableHeader}
+            tableData={transactionsTableData}
+          />
+        ) : (
+          <div>No transaction history</div>
+        )}
       </div>
     )
   }
